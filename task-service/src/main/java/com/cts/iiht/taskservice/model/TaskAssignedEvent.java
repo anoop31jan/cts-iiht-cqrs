@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.*;
 import lombok.*;
 import lombok.experimental.*;
 
+import java.io.Serializable;
 import java.time.*;
 
 @Data
@@ -11,7 +12,7 @@ import java.time.*;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class TaskAssignedEvent extends BaseEvent {
+public class TaskAssignedEvent extends BaseEvent implements Serializable {
 
     private String memberId;
     private String taskName;

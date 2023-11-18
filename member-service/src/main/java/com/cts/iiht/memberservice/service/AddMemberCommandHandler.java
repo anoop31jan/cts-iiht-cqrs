@@ -54,7 +54,7 @@ public class AddMemberCommandHandler {
 
         ProjectMember projectMember = memberServiceHelper.craeteProjectMemberEntityForMySQL(memberAddedEvent);
         memberRepository.save(projectMember);
-        LOGGER.info("Data saved successfully");
+        LOGGER.info("Data saved successfully to mysql");
 
     }
 

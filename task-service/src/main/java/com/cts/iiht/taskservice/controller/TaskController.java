@@ -1,10 +1,10 @@
 package com.cts.iiht.taskservice.controller;
 
+import com.cts.iiht.taskservice.exception.DataValidationException;
 import com.cts.iiht.taskservice.external.*;
 import com.cts.iiht.taskservice.external.client.*;
 import com.cts.iiht.taskservice.model.*;
 import com.cts.iiht.taskservice.service.*;
-import org.apache.kafka.common.errors.*;
 import org.slf4j.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.http.*;
@@ -29,7 +29,7 @@ public class TaskController {
 
     @PostMapping("/manager/assign-task")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Object> assignTask(@Valid @RequestBody AssignTaskCommand assignTaskCommand) {
+    public ResponseEntity<Object> assignTask(@Valid @RequestBody AssignTaskCommand assignTaskCommand) throws Exception {
 
         ProjectMemberClient memberClient = memberService.getMemberDetails(assignTaskCommand.getMemberId());
 
@@ -38,10 +38,10 @@ public class TaskController {
         if (Objects.nonNull(memberClient)) {
 
             if (assignTaskCommand.getTaskEndDate().isBefore(assignTaskCommand.getTaskStartDate())) {
-                throw new InvalidRequestException("Task start date can not be before task end date ");
+                throw new DataValidationException("Task start date can not be before task end date ");
             }
             if (assignTaskCommand.getTaskEndDate().isAfter(memberClient.getProjectEndDate())) {
-                throw new InvalidRequestException("Task end date can not be before Project end date ");
+                throw new DataValidationException("Task end date can not be before Project end date ");
             }
 
             final TaskAssignedEvent taskAssignedEvent = taskCommandHandler.sendMessage(assignTaskCommand);

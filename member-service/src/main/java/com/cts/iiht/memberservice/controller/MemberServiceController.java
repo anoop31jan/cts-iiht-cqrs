@@ -1,10 +1,10 @@
 package com.cts.iiht.memberservice.controller;
 
 import com.cts.iiht.memberservice.entity.*;
+import com.cts.iiht.memberservice.exception.DataValidationException;
 import com.cts.iiht.memberservice.model.*;
 import com.cts.iiht.memberservice.service.*;
 import org.apache.commons.lang.StringUtils;
-import org.apache.kafka.common.errors.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.domain.*;
 import org.springframework.data.web.*;
@@ -35,16 +35,16 @@ public class MemberServiceController {
 
     @PostMapping("/manager/add-member")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<APIResponse> addProjectMember(@Valid @RequestBody AddMemberCommand addMemberCommand){
+    public ResponseEntity<APIResponse> addProjectMember(@Valid @RequestBody AddMemberCommand addMemberCommand) throws  Exception{
 
         ProjectMember projectMember = addMemberCommandHandler.getProjectMemberByMemberId(addMemberCommand.getMemberId());
 
         if (Objects.nonNull(projectMember)){
-            throw new InvalidRequestException(ERROR_MESSAGE_MEMBER_ALREADY_EXIST);
+            throw new DataValidationException(ERROR_MESSAGE_MEMBER_ALREADY_EXIST);
         }
 
         if (addMemberCommand.getProjectEndDate().isBefore(addMemberCommand.getProjectStartDate())){
-            throw new InvalidRequestException(ERROR_MESSAGE_PROJECT_START_DATE);
+            throw new DataValidationException(ERROR_MESSAGE_PROJECT_START_DATE);
         }
         final MemberAddedEvent memberAddedEvent = addMemberCommandHandler.sendMessage(addMemberCommand);
 
@@ -59,14 +59,14 @@ public class MemberServiceController {
     }
 
     @GetMapping("/member/{memberId}")
-    public ResponseEntity<ProjectMemberDoc> getMemberDetails(@PathVariable String memberId) {
+    public ResponseEntity<ProjectMemberDoc> getMemberDetails(@PathVariable String memberId) throws Exception {
         if (StringUtils.isNotBlank(memberId)) {
             ProjectMemberDoc projectMember = queryService.getProjectMemberByMemberId(memberId);
             if (Objects.nonNull(projectMember)) {
 
                 return ResponseEntity.ok(projectMember);
             }
-            throw new InvalidRequestException(ERROR_MESSAGE_MEMBER_NOT_FOUND + memberId);
+            throw new DataValidationException(ERROR_MESSAGE_MEMBER_NOT_FOUND + memberId);
         }
         return ResponseEntity.notFound().build();
     }
@@ -85,11 +85,11 @@ public class MemberServiceController {
 
     @PutMapping("/manager/update/{memberId}/allocationpercentage")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Object> updateAllocationPercentage(@PathVariable String memberId){
+    public ResponseEntity<Object> updateAllocationPercentage(@PathVariable String memberId) throws Exception{
 
         ProjectMember projectMember = addMemberCommandHandler.getProjectMemberByMemberId(memberId);
         if (Objects.isNull(projectMember)){
-            throw new InvalidRequestException(ERROR_MESSAGE_MEMBER_NOT_FOUND + memberId);
+            throw new DataValidationException(ERROR_MESSAGE_MEMBER_NOT_FOUND + memberId);
         }
         addMemberCommandHandler.updateMemberAllocationpercentage(projectMember);
         APIResponse apiResponse = APIResponse.builder()

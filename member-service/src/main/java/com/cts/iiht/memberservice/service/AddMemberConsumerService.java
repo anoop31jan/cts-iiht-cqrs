@@ -36,7 +36,7 @@ public class AddMemberConsumerService {
         LOGGER.info("Received Payload : {} ",memberAddedEvent);
         LOGGER.info("event transaction id : {} ",memberAddedEvent.getTransactionId());
 
-        LOGGER.info("Data saved successfully");
+
 
         if (MEMBER_CREATED_EVENT.equalsIgnoreCase(memberAddedEvent.getEventName())) {
             saveToMongoDb(memberAddedEvent);

@@ -3,6 +3,8 @@ package com.cts.iiht.memberservice.model;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.io.Serializable;
+
 
 @Getter
 @Setter
@@ -10,7 +12,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BaseEvent {
+public class BaseEvent implements Serializable {
     public String eventName;
     public String createdAt;
     public String transactionId;
