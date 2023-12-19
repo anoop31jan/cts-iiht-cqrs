@@ -1,4 +1,4 @@
-package com.cts.iiht.memberservice;
+package com.cts.iiht.memberservice;//package com.cts.iiht.memberservice;
 
 import com.cts.iiht.memberservice.controller.MemberServiceController;
 import com.cts.iiht.memberservice.entity.ProjectMember;
@@ -10,6 +10,7 @@ import com.cts.iiht.memberservice.model.TeamMembers;
 import com.cts.iiht.memberservice.service.AddMemberCommandHandler;
 import com.cts.iiht.memberservice.service.QueryService;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -37,6 +38,7 @@ public class MemberControllerTest {
 
     @Mock
     private QueryService queryService;
+
 
 
     @Test
